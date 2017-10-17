@@ -28,9 +28,9 @@ endif
 
 NAME   = amiberry
 RM     = rm -f
-CC     = gcc
-CXX    = g++
-STRIP  = strip
+CC     ?= gcc
+CXX    ?= g++
+STRIP  ?= strip
 
 PROG   = $(NAME)
 
