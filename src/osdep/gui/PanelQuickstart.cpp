@@ -1,5 +1,5 @@
 #include <guichan.hpp>
-#include <SDL/SDL_ttf.h>
+#include <SDL_ttf.h>
 #include <guichan/sdl.hpp>
 #include "sdltruetypefont.hpp"
 #include "SelectorEntry.hpp"
