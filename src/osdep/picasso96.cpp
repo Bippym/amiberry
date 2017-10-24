@@ -938,7 +938,7 @@ void picasso_handle_vsync(void)
 #define BLT_FUNC(s,d) *d = (*s) | (*d)
 #include "p96_blit.cpp"
 #define BLT_NAME BLIT_TRUE_24
-#ifdef AMIBERRY
+#ifdef RASPBERRY
 #define BLT_FUNC(s,d) memset(d, 0xff, sizeof (*d))
 #else
 #define BLT_FUNC(s,d) *d = 0xffffffff
@@ -993,7 +993,7 @@ void picasso_handle_vsync(void)
 #define BLT_FUNC(s,d) *d = (*s) | (*d)
 #include "p96_blit.cpp"
 #define BLT_NAME BLIT_TRUE_16
-#ifdef AMIBERRY
+#ifdef RASPBERRY
 #define BLT_FUNC(s,d) memset(d, 0xff, sizeof (*d))
 #else
 #define BLT_FUNC(s,d) *d = 0xffffffff
@@ -1048,7 +1048,7 @@ void picasso_handle_vsync(void)
 #define BLT_FUNC(s,d) *d = (*s) | (*d)
 #include "p96_blit.cpp"
 #define BLT_NAME BLIT_TRUE_8
-#ifdef AMIBERRY
+#ifdef RASPBERRY
 #define BLT_FUNC(s,d) memset(d, 0xff, sizeof (*d))
 #else
 #define BLT_FUNC(s,d) *d = 0xffffffff
@@ -3094,14 +3094,22 @@ static void picasso_statusline (uae_u8 *dst)
 static void copyall (uae_u8 *src, uae_u8 *dst)
 {
   if (picasso96_state.RGBFormat == RGBFB_R5G6B5)
+#ifdef USE_ARMNEON
     copy_screen_16bit_swap(dst, src, picasso96_state.Width * picasso96_state.Height * 2);
+#else
+    copy_screen_16bit_swap_arm(dst, src, picasso96_state.Width * picasso96_state.Height * 2);
+#endif
   else if(picasso96_state.RGBFormat == RGBFB_CLUT)
   {
     int pixels = picasso96_state.Width * picasso96_state.Height;
     copy_screen_8bit(dst, src, pixels, picasso_vidinfo.clut);
   }
   else
-    copy_screen_32bit_to_16bit(dst, src, picasso96_state.Width * picasso96_state.Height * 4);
+#ifdef USE_ARMNEON
+    copy_screen_32bit_to_16bit_neon(dst, src, picasso96_state.Width * picasso96_state.Height * 4);
+#else
+    copy_screen_32bit_to_16bit_arm(dst, src, picasso96_state.Width * picasso96_state.Height * 4);
+#endif
 }
 
 bool picasso_flushpixels (uae_u8 *src, int off)

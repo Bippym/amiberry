@@ -24,7 +24,11 @@ static gcn::Button *cmdLoadFrom;
 static gcn::Button *cmdSaveAs;
 static gcn::Button *cmdDelete;
 static gcn::Label *lblName;
+#ifdef ANDROID
+gcn::TextField *txtName;
+#else
 static gcn::TextField *txtName;
+#endif
 static gcn::Label *lblDesc;
 static gcn::TextField *txtDesc;
 static gcn::UaeListBox* lstConfigs;

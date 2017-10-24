@@ -20,6 +20,9 @@
 #include "keyboard.h"
 #include "inputdevice.h"
 
+#ifdef ANDROIDSDL
+#include <SDL_android.h>
+#endif
 
 static const char *mousespeed_list[] = { ".25", ".5", "1x", "2x", "4x" };
 static const int mousespeed_values[] = { 2, 5, 10, 20, 40 };
@@ -201,6 +204,12 @@ class InputActionListener : public gcn::ActionListener
     	
     	else if (actionEvent.getSource() == chkMouseHack)
   	  {
+#ifdef ANDROIDSDL
+        if (chkMouseHack->isSelected())
+             SDL_ANDROID_SetMouseEmulationMode(0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+        else
+             SDL_ANDROID_SetMouseEmulationMode(1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+#endif
   	    changed_prefs.input_tablet = chkMouseHack->isSelected() ? TABLET_MOUSEHACK : TABLET_OFF;
   	  }
     	  
@@ -220,7 +229,11 @@ class InputActionListener : public gcn::ActionListener
         customControlMap[VK_Y] = amigaKey[cboY->getSelected()];
 
  	    else if (actionEvent.getSource() == cboL)
+#ifdef ANDROIDSDL
+	customControlMap[SDLK_F13] = amigaKey[cboL->getSelected()];
+#else
         customControlMap[VK_L] = amigaKey[cboL->getSelected()];
+#endif
 
  	    else if (actionEvent.getSource() == cboR)
         customControlMap[VK_R] = amigaKey[cboR->getSelected()];
@@ -560,7 +573,11 @@ void RefreshPanelInput(void)
   cboB->setSelected(GetAmigaKeyIndex(customControlMap[VK_B]));
   cboX->setSelected(GetAmigaKeyIndex(customControlMap[VK_X]));
   cboY->setSelected(GetAmigaKeyIndex(customControlMap[VK_Y]));
+#ifdef ANDROIDSDL
+cboL->setSelected(GetAmigaKeyIndex(customControlMap[SDLK_F13]));
+#else
   cboL->setSelected(GetAmigaKeyIndex(customControlMap[VK_L]));
+#endif
   cboR->setSelected(GetAmigaKeyIndex(customControlMap[VK_R]));
   cboUp->setSelected(GetAmigaKeyIndex(customControlMap[VK_UP]));
   cboDown->setSelected(GetAmigaKeyIndex(customControlMap[VK_DOWN]));

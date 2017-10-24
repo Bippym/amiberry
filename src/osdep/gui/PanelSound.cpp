@@ -256,7 +256,11 @@ void InitPanelSound(const struct _ConfigCategory& category)
 	grpSound->add(optSoundEmulated, 5, 70);
 	grpSound->add(optSoundEmulatedBest, 5, 100);
 	grpSound->setMovable(false);
+#ifdef ANDROID
+	grpSound->setSize(210, 150);
+#else
 	grpSound->setSize(200, 150);
+#endif
   grpSound->setBaseColor(gui_baseCol);
 
 	lblFrequency = new gcn::Label("Frequency:");
@@ -278,11 +282,22 @@ void InitPanelSound(const struct _ConfigCategory& category)
 	grpMode->add(optMono, 5, 10);
 	grpMode->add(optStereo, 5, 40);
 	grpMode->setMovable(false);
+#ifdef ANDROID
+	grpMode->setSize(95, 90);
+#else
 	grpMode->setSize(90, 90);
+#endif
   grpMode->setBaseColor(gui_baseCol);
 
+    int labelWidth;
+#ifdef ANDROID
+	labelWidth = 135;
+#else
+	labelWidth = 130;
+#endif
+
 	lblInterpolation = new gcn::Label("Interpolation:");
-	lblInterpolation->setSize(130, LABEL_HEIGHT);
+	lblInterpolation->setSize(labelWidth, LABEL_HEIGHT);
   lblInterpolation->setAlignment(gcn::Graphics::RIGHT);
   cboInterpolation = new gcn::UaeDropDown(&interpolationTypeList);
   cboInterpolation->setSize(160, DROPDOWN_HEIGHT);
@@ -291,7 +306,7 @@ void InitPanelSound(const struct _ConfigCategory& category)
   cboInterpolation->addActionListener(soundActionListener);
 
 	lblFilter = new gcn::Label("Filter:");
-	lblFilter->setSize(130, LABEL_HEIGHT);
+	lblFilter->setSize(labelWidth, LABEL_HEIGHT);
   lblFilter->setAlignment(gcn::Graphics::RIGHT);
   cboFilter = new gcn::UaeDropDown(&filterTypeList);
   cboFilter->setSize(160, DROPDOWN_HEIGHT);
@@ -300,7 +315,7 @@ void InitPanelSound(const struct _ConfigCategory& category)
   cboFilter->addActionListener(soundActionListener);
 
 	lblSeparation = new gcn::Label("Stereo separation:");
-	lblSeparation->setSize(130, LABEL_HEIGHT);
+	lblSeparation->setSize(labelWidth, LABEL_HEIGHT);
   lblSeparation->setAlignment(gcn::Graphics::RIGHT);
   sldSeparation = new gcn::Slider(0, 10);
   sldSeparation->setSize(160, SLIDER_HEIGHT);
@@ -312,7 +327,7 @@ void InitPanelSound(const struct _ConfigCategory& category)
   lblSeparationInfo = new gcn::Label("100%");
 
 	lblStereoDelay = new gcn::Label("Stereo delay:");
-	lblStereoDelay->setSize(130, LABEL_HEIGHT);
+	lblStereoDelay->setSize(labelWidth, LABEL_HEIGHT);
   lblStereoDelay->setAlignment(gcn::Graphics::RIGHT);
   sldStereoDelay = new gcn::Slider(0, 10);
   sldStereoDelay->setSize(160, SLIDER_HEIGHT);

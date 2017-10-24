@@ -16,11 +16,13 @@
 #include <png.h>
 #include <SDL.h>
 #include <SDL/SDL_image.h>
+#ifndef ANDROID
 #include <SDL/SDL_gfxPrimitives.h>
+#endif
 #include <SDL/SDL_ttf.h>
 
 #ifdef ANDROIDSDL
-#include <android/log.h>
+#include <SDL_screenkeyboard.h>
 #endif
 
 #include <linux/fb.h>
@@ -42,9 +44,15 @@ unsigned long time_per_frame = 20000; // Default for PAL (50 Hz): 20000 microsec
 static unsigned long last_synctime;
 
 /* Possible screen modes (x and y resolutions) */
+#ifdef ANDROID
+#define MAX_SCREEN_MODES 11
+static int x_size_table[MAX_SCREEN_MODES] = { 640, 640, 720, 800, 800, 960, 1024, 1024, 1280, 1280, 1920 };
+static int y_size_table[MAX_SCREEN_MODES] = { 400, 480, 400, 480, 600, 540,  768,  600,  720,  800, 1080 };
+#else
 #define MAX_SCREEN_MODES 6
 static int x_size_table[MAX_SCREEN_MODES] = { 640, 640, 800, 1024, 1152, 1280 };
 static int y_size_table[MAX_SCREEN_MODES] = { 400, 480, 480,  768,  864,  960 };
+#endif
 
 static int red_bits, green_bits, blue_bits;
 static int red_shift, green_shift, blue_shift;
@@ -73,6 +81,21 @@ int delay_savestate_frame = 0;
 
 
 static unsigned long next_synctime = 0;
+
+#ifdef ANDROID
+static pthread_mutex_t gfx_mutex =  PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
+#else
+static pthread_mutex_t gfx_mutex =  PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+#endif
+
+void gfx_lock (void)
+{
+	pthread_mutex_lock(&gfx_mutex);
+}
+void gfx_unlock (void)
+{
+	pthread_mutex_unlock(&gfx_mutex);
+}
 
 int graphics_setup (void)
 {
@@ -175,6 +198,70 @@ static int CalcPandoraWidth(struct uae_prefs *p)
   return pandWidth;
 }
 
+#ifdef ANDROIDSDL
+void update_onscreen()
+{
+	SDL_ANDROID_SetScreenKeyboardFloatingJoystick(changed_prefs.floatingJoystick);
+	if (changed_prefs.onScreen==0)
+	{
+	  SDL_ANDROID_SetScreenKeyboardShown(0);
+	}
+	else
+	{
+	  SDL_ANDROID_SetScreenKeyboardShown(1);
+	    SDL_Rect pos_textinput, pos_dpad, pos_button1, pos_button2, pos_button3, pos_button4, pos_button5, pos_button6;
+	    pos_textinput.x = changed_prefs.pos_x_textinput*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_textinput.y = changed_prefs.pos_y_textinput*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_textinput.h=SDL_ListModes(NULL, 0)[0]->h / (float)10;
+	    pos_textinput.w=pos_textinput.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_TEXT, &pos_textinput);
+	    pos_dpad.x = changed_prefs.pos_x_dpad*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_dpad.y = changed_prefs.pos_y_dpad*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_dpad.h=SDL_ListModes(NULL, 0)[0]->h / (float)2.5;
+	    pos_dpad.w=pos_dpad.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_DPAD, &pos_dpad);
+	    pos_button1.x = changed_prefs.pos_x_button1*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button1.y = changed_prefs.pos_y_button1*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button1.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button1.w=pos_button1.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_0, &pos_button1);
+	    pos_button2.x = changed_prefs.pos_x_button2*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button2.y = changed_prefs.pos_y_button2*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button2.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button2.w=pos_button2.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_1, &pos_button2);
+	    pos_button3.x = changed_prefs.pos_x_button3*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button3.y = changed_prefs.pos_y_button3*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button3.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button3.w=pos_button3.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_2, &pos_button3);
+	    pos_button4.x = changed_prefs.pos_x_button4*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button4.y = changed_prefs.pos_y_button4*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button4.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button4.w=pos_button4.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_3, &pos_button4);
+	    pos_button5.x = changed_prefs.pos_x_button5*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button5.y = changed_prefs.pos_y_button5*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button5.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button5.w=pos_button5.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_4, &pos_button5);
+	    pos_button6.x = changed_prefs.pos_x_button6*(SDL_ListModes(NULL, 0)[0]->w/(float)480);
+	    pos_button6.y = changed_prefs.pos_y_button6*(SDL_ListModes(NULL, 0)[0]->h/(float)360);
+	    pos_button6.h=SDL_ListModes(NULL, 0)[0]->h / (float)5;
+	    pos_button6.w=pos_button6.h;
+	    SDL_ANDROID_SetScreenKeyboardButtonPos(SDL_ANDROID_SCREENKEYBOARD_BUTTON_5, &pos_button6);
+
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_TEXT, changed_prefs.onScreen_textinput);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_DPAD, changed_prefs.onScreen_dpad);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_0, changed_prefs.onScreen_button1);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_1, changed_prefs.onScreen_button2);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_2, changed_prefs.onScreen_button3);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_3, changed_prefs.onScreen_button4);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_4, changed_prefs.onScreen_button5);
+	    SDL_ANDROID_SetScreenKeyboardButtonShown(SDL_ANDROID_SCREENKEYBOARD_BUTTON_5, changed_prefs.onScreen_button6);
+	}
+}
+#endif
 
 static void open_screen(struct uae_prefs *p)
 {
@@ -207,17 +294,21 @@ static void open_screen(struct uae_prefs *p)
   {
     if(prSDLScreen == NULL || prSDLScreen->w != p->gfx_size.width || prSDLScreen->h != p->gfx_size.height)
     {
-#if !defined(WIN32)
-  	  prSDLScreen = SDL_SetVideoMode(p->gfx_size.width, p->gfx_size.height, 16, SDL_HWSURFACE|SDL_FULLSCREEN|SDL_DOUBLEBUF);
+#ifdef ANDROIDSDL
+  	  prSDLScreen = SDL_SetVideoMode(p->gfx_size.width, p->gfx_size.height, 16, SDL_SWSURFACE|SDL_FULLSCREEN);
 #else
-  	  prSDLScreen = SDL_SetVideoMode(p->gfx_size.width, p->gfx_size.height, 16, SDL_SWSURFACE|SDL_DOUBLEBUF);
+  	  prSDLScreen = SDL_SetVideoMode(p->gfx_size.width, p->gfx_size.height, 16, SDL_HWSURFACE|SDL_FULLSCREEN|SDL_DOUBLEBUF);
 #endif
     }
   }
   else
   {
     if(picasso_vidinfo.width != 0 && picasso_vidinfo.height != 0)
+#ifdef ANDROIDSDL
+  	    prSDLScreen = SDL_SetVideoMode(picasso_vidinfo.width, picasso_vidinfo.height, 16, SDL_SWSURFACE|SDL_FULLSCREEN);
+#else
     	prSDLScreen = SDL_SetVideoMode(picasso_vidinfo.width, picasso_vidinfo.height, 16, SDL_HWSURFACE|SDL_FULLSCREEN|SDL_DOUBLEBUF);
+#endif
   }
   if(prSDLScreen != NULL)
   {
@@ -702,8 +793,7 @@ int picasso_palette (struct MyCLUTEntry *CLUT)
     int r = CLUT[i].Red;
     int g = CLUT[i].Green;
     int b = CLUT[i].Blue;
-    int value = (r << 16 | g << 8 | b);
-  	uae_u32 v = CONVERT_RGB(value);
+  	uae_u32 v = CONVERT_RGB(r << 16 | g << 8 | b);
 	  if (v !=  picasso_vidinfo.clut[i]) {
 	     picasso_vidinfo.clut[i] = v;
 	     changed = 1;

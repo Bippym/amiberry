@@ -168,7 +168,7 @@ static blockinfo* hold_bi[MAX_HOLD_BI];
 blockinfo* active;
 blockinfo* dormant;
 
-#ifndef WIN32
+#ifndef WIN32 || !defined(ANDROID)
 #include <sys/mman.h>
 
 void cache_free (uae_u8 *cache, int size)

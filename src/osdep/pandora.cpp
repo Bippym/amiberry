@@ -13,7 +13,9 @@
 #include <asm/sigcontext.h>
 #include <signal.h>
 #include <dlfcn.h>
+#ifndef ANDROID
 #include <execinfo.h>
+#endif
 #include "sysconfig.h"
 #include "sysdeps.h"
 #include "config.h"
@@ -241,7 +243,38 @@ void target_default_options (struct uae_prefs *p, int type)
 	p->pandora_customControls = 0;
 
 	p->picasso96_modeflags = RGBFF_CLUT | RGBFF_R5G6B5 | RGBFF_R8G8B8A8;
-	
+#ifdef ANDROIDSDL
+	p->onScreen = 1;
+	p->onScreen_textinput = 1;
+	p->onScreen_dpad = 1;
+	p->onScreen_button1 = 1;
+	p->onScreen_button2 = 1;
+	p->onScreen_button3 = 1;
+	p->onScreen_button4 = 1;
+	p->onScreen_button5 = 0;
+	p->onScreen_button6 = 0;
+	p->custom_position = 0;
+	p->pos_x_textinput = 0;
+	p->pos_y_textinput = 0;
+	p->pos_x_dpad = 4;
+	p->pos_y_dpad = 215;
+	p->pos_x_button1 = 430;
+	p->pos_y_button1 = 286;
+	p->pos_x_button2 = 378;
+	p->pos_y_button2 = 286;
+	p->pos_x_button3 = 430;
+	p->pos_y_button3 = 214;
+	p->pos_x_button4 = 378;
+	p->pos_y_button4 = 214;
+	p->pos_x_button5 = 430;
+	p->pos_y_button5 = 142;
+	p->pos_x_button6 = 378;
+	p->pos_y_button6 = 142;
+	p->extfilter = 1;
+	p->quickSwitch = 0;
+	p->floatingJoystick = 0;
+	p->disableMenuVKeyb = 0;
+#endif
 	memset(customControlMap, 0, sizeof(customControlMap));
 	
 	p->cr[CHIPSET_REFRESH_PAL].locked = true;
@@ -293,7 +326,11 @@ void target_save_options (struct zfile *f, struct uae_prefs *p)
   cfgfile_write (f, "pandora.custom_b", "%d", customControlMap[VK_B]);
   cfgfile_write (f, "pandora.custom_x", "%d", customControlMap[VK_X]);
   cfgfile_write (f, "pandora.custom_y", "%d", customControlMap[VK_Y]);
+#ifdef ANDROIDSDL
+  cfgfile_write (f, "pandora.custom_l", "%d", customControlMap[SDLK_F13]);
+#else
   cfgfile_write (f, "pandora.custom_l", "%d", customControlMap[VK_L]);
+#endif
   cfgfile_write (f, "pandora.custom_r", "%d", customControlMap[VK_R]);
   cfgfile_write (f, "pandora.move_y", "%d", p->pandora_vertical_offset - OFFSET_Y_ADJUST);
 
@@ -308,6 +345,36 @@ void target_save_options (struct zfile *f, struct uae_prefs *p)
 	cfgfile_write(f, _T("kbd_led_num"), _T("%d"), p->kbd_led_num);
 	cfgfile_write(f, _T("kbd_led_scr"), _T("%d"), p->kbd_led_scr);
 	cfgfile_write(f, _T("kbd_led_cap"), _T("%d"), p->kbd_led_cap);
+#endif
+#ifdef ANDROIDSDL
+  cfgfile_write (f, "pandora.onscreen", "%d", p->onScreen);
+  cfgfile_write (f, "pandora.onscreen_textinput", "%d", p->onScreen_textinput);
+  cfgfile_write (f, "pandora.onscreen_dpad", "%d", p->onScreen_dpad);
+  cfgfile_write (f, "pandora.onscreen_button1", "%d", p->onScreen_button1);
+  cfgfile_write (f, "pandora.onscreen_button2", "%d", p->onScreen_button2);
+  cfgfile_write (f, "pandora.onscreen_button3", "%d", p->onScreen_button3);
+  cfgfile_write (f, "pandora.onscreen_button4", "%d", p->onScreen_button4);
+  cfgfile_write (f, "pandora.onscreen_button5", "%d", p->onScreen_button5);
+  cfgfile_write (f, "pandora.onscreen_button6", "%d", p->onScreen_button6);
+  cfgfile_write (f, "pandora.custom_position", "%d", p->custom_position);
+  cfgfile_write (f, "pandora.pos_x_textinput", "%d", p->pos_x_textinput);
+  cfgfile_write (f, "pandora.pos_y_textinput", "%d", p->pos_y_textinput);
+  cfgfile_write (f, "pandora.pos_x_dpad", "%d", p->pos_x_dpad);
+  cfgfile_write (f, "pandora.pos_y_dpad", "%d", p->pos_y_dpad);
+  cfgfile_write (f, "pandora.pos_x_button1", "%d", p->pos_x_button1);
+  cfgfile_write (f, "pandora.pos_y_button1", "%d", p->pos_y_button1);
+  cfgfile_write (f, "pandora.pos_x_button2", "%d", p->pos_x_button2);
+  cfgfile_write (f, "pandora.pos_y_button2", "%d", p->pos_y_button2);
+  cfgfile_write (f, "pandora.pos_x_button3", "%d", p->pos_x_button3);
+  cfgfile_write (f, "pandora.pos_y_button3", "%d", p->pos_y_button3);
+  cfgfile_write (f, "pandora.pos_x_button4", "%d", p->pos_x_button4);
+  cfgfile_write (f, "pandora.pos_y_button4", "%d", p->pos_y_button4);
+  cfgfile_write (f, "pandora.pos_x_button5", "%d", p->pos_x_button5);
+  cfgfile_write (f, "pandora.pos_y_button5", "%d", p->pos_y_button5);
+  cfgfile_write (f, "pandora.pos_x_button6", "%d", p->pos_x_button6);
+  cfgfile_write (f, "pandora.pos_y_button6", "%d", p->pos_y_button6);
+  cfgfile_write (f, "pandora.floating_joystick", "%d", p->floatingJoystick);
+  cfgfile_write (f, "pandora.disable_menu_vkeyb", "%d", p->disableMenuVKeyb);
 #endif
 }
 
@@ -343,7 +410,11 @@ int target_parse_option (struct uae_prefs *p, const char *option, const char *va
     || cfgfile_intval (option, value, "custom_b", &customControlMap[VK_B], 1)
     || cfgfile_intval (option, value, "custom_x", &customControlMap[VK_X], 1)
     || cfgfile_intval (option, value, "custom_y", &customControlMap[VK_Y], 1)
+#ifdef ANDROIDSDL
+    || cfgfile_intval (option, value, "custom_l", &customControlMap[SDLK_F13], 1)
+#else
     || cfgfile_intval (option, value, "custom_l", &customControlMap[VK_L], 1)
+#endif
     || cfgfile_intval (option, value, "custom_r", &customControlMap[VK_R], 1)
 #ifdef RASPBERRY
     || cfgfile_intval (option, value, "gfx_correct_aspect", &p->gfx_correct_aspect, 1)
@@ -356,6 +427,36 @@ int target_parse_option (struct uae_prefs *p, const char *option, const char *va
     || cfgfile_intval (option, value, "key_for_quit", &p->key_for_quit, 1)
 	  || cfgfile_intval (option, value, "button_for_menu", &p->button_for_menu, 1)
     || cfgfile_intval (option, value, "button_for_quit", &p->button_for_quit, 1)
+#ifdef ANDROIDSDL
+    || cfgfile_intval (option, value, "onscreen", &p->onScreen, 1)
+    || cfgfile_intval (option, value, "onscreen_textinput", &p->onScreen_textinput, 1)
+    || cfgfile_intval (option, value, "onscreen_dpad", &p->onScreen_dpad, 1)
+    || cfgfile_intval (option, value, "onscreen_button1", &p->onScreen_button1, 1)
+    || cfgfile_intval (option, value, "onscreen_button2", &p->onScreen_button2, 1)
+    || cfgfile_intval (option, value, "onscreen_button3", &p->onScreen_button3, 1)
+    || cfgfile_intval (option, value, "onscreen_button4", &p->onScreen_button4, 1)
+    || cfgfile_intval (option, value, "onscreen_button5", &p->onScreen_button5, 1)
+    || cfgfile_intval (option, value, "onscreen_button6", &p->onScreen_button6, 1)
+    || cfgfile_intval (option, value, "custom_position", &p->custom_position, 1)
+    || cfgfile_intval (option, value, "pos_x_textinput", &p->pos_x_textinput, 1)
+    || cfgfile_intval (option, value, "pos_y_textinput", &p->pos_y_textinput, 1)
+    || cfgfile_intval (option, value, "pos_x_dpad", &p->pos_x_dpad, 1)
+    || cfgfile_intval (option, value, "pos_y_dpad", &p->pos_y_dpad, 1)
+    || cfgfile_intval (option, value, "pos_x_button1", &p->pos_x_button1, 1)
+    || cfgfile_intval (option, value, "pos_y_button1", &p->pos_y_button1, 1)
+    || cfgfile_intval (option, value, "pos_x_button2", &p->pos_x_button2, 1)
+    || cfgfile_intval (option, value, "pos_y_button2", &p->pos_y_button2, 1)
+    || cfgfile_intval (option, value, "pos_x_button3", &p->pos_x_button3, 1)
+    || cfgfile_intval (option, value, "pos_y_button3", &p->pos_y_button3, 1)
+    || cfgfile_intval (option, value, "pos_x_button4", &p->pos_x_button4, 1)
+    || cfgfile_intval (option, value, "pos_y_button4", &p->pos_y_button4, 1)
+    || cfgfile_intval (option, value, "pos_x_button5", &p->pos_x_button5, 1)
+    || cfgfile_intval (option, value, "pos_y_button5", &p->pos_y_button5, 1)
+    || cfgfile_intval (option, value, "pos_x_button6", &p->pos_x_button6, 1)
+    || cfgfile_intval (option, value, "pos_y_button6", &p->pos_y_button6, 1)
+    || cfgfile_intval (option, value, "floating_joystick", &p->floatingJoystick, 1)
+    || cfgfile_intval (option, value, "disable_menu_vkeyb", &p->disableMenuVKeyb, 1)
+#endif
     );
   if(!result) {
     result = cfgfile_intval (option, value, "move_y", &p->pandora_vertical_offset, 1);
@@ -655,10 +756,25 @@ void loadAdfDir(void)
 {
 	char path[MAX_DPATH];
   int i;
-
+#ifdef ANDROID
+	strncpy(currentDir, getenv("SDCARD"), MAX_DPATH);
+#else
 	strncpy(currentDir, start_path_data, MAX_DPATH);
+#endif
 	snprintf(config_path, MAX_DPATH, "%s/conf/", start_path_data);
+#ifdef ANDROID
+    char afepath[MAX_DPATH];
+    snprintf(afepath, MAX_DPATH, "%s/Android/data/com.cloanto.amigaforever.essentials/files/rom/", getenv("SDCARD"));
+    DIR *afedir = opendir(afepath);
+    if (afedir) {
+        snprintf(rom_path, MAX_DPATH, "%s", afepath);
+        closedir(afedir);
+    }
+	else
+        snprintf(rom_path, MAX_DPATH, "%s/kickstarts/", start_path_data);
+#else
 	snprintf(rom_path, MAX_DPATH, "%s/kickstarts/", start_path_data);
+#endif
 	snprintf(rp9_path, MAX_DPATH, "%s/rp9/", start_path_data);
 
 	snprintf(path, MAX_DPATH, "%s/conf/adfdir.conf", start_path_data);
@@ -1234,7 +1350,79 @@ int handle_msgpump (void)
             inputdevice_do_keyboard(AK_LSH, 0);
             break;
             
+#ifdef ANDROID
+		    case SDLK_LCTRL:
+                        inputdevice_do_keyboard(AK_CTRL, 0);
+                        break;
+		    case SDLK_RSHIFT:
+                        inputdevice_do_keyboard(AK_RSH, 0);
+                        break;
+		    case SDLK_LALT:
+                        inputdevice_do_keyboard(AK_LALT, 0);
+                        break;
+		    case SDLK_RALT:
+                        inputdevice_do_keyboard(AK_RALT, 0);
+                        break;
+		    case SDLK_LMETA:
+                        inputdevice_do_keyboard(AK_LAMI, 0);
+                        break;
+		    case SDLK_RMETA:
+                        inputdevice_do_keyboard(AK_RAMI, 0);
+                        break;
+		    case SDLK_CAPSLOCK:
+                        inputdevice_do_keyboard(AK_CAPSLOCK, 0);
+                        break;
+		    case SDLK_INSERT:
+                        inputdevice_do_keyboard(AK_HELP, 0);
+                        break;
+		    case SDLK_KP_DIVIDE:
+                        inputdevice_do_keyboard(AK_NPDIV, 0);
+                        break;
+		    case SDLK_KP_MINUS:
+                        inputdevice_do_keyboard(AK_NPSUB, 0);
+                        break;
+		    case SDLK_KP_ENTER:
+                        inputdevice_do_keyboard(AK_ENT, 0);
+                        break;
+		    case SDLK_KP_PERIOD:
+                        inputdevice_do_keyboard(AK_NPDEL, 0);
+                        break;
+		    case SDLK_KP0:
+                        inputdevice_do_keyboard(AK_NP0, 0);
+                        break;
+		    case SDLK_KP1:
+                        inputdevice_do_keyboard(AK_NP1, 0);
+                        break;
+		    case SDLK_KP2:
+                        inputdevice_do_keyboard(AK_NP2, 0);
+                        break;
+		    case SDLK_KP3:
+                        inputdevice_do_keyboard(AK_NP3, 0);
+                        break;
+		    case SDLK_KP4:
+                        inputdevice_do_keyboard(AK_NP4, 0);
+                        break;
+		    case SDLK_KP5:
+                        inputdevice_do_keyboard(AK_NP5, 0);
+                        break;
+		    case SDLK_KP6:
+                        inputdevice_do_keyboard(AK_NP6, 0);
+                        break;
+		    case SDLK_KP7:
+                        inputdevice_do_keyboard(AK_NP7, 0);
+                        break;
+		    case SDLK_KP8:
+                        inputdevice_do_keyboard(AK_NP8, 0);
+                        break;
+		    case SDLK_KP9:
+                        inputdevice_do_keyboard(AK_NP9, 0);
+                        break;
+#endif
+#ifdef ANDROIDSDL
+				  case SDLK_F13: // Left shoulder button
+#else
 				  case SDLK_RSHIFT: // Left shoulder button
+#endif
 				  case SDLK_RCTRL:  // Right shoulder button
   					if(currprefs.input_tablet > TABLET_OFF) {
   					  // Release left or right shoulder button -> stylus does left mousebutton
@@ -1306,7 +1494,7 @@ int handle_msgpump (void)
     		    int mouseScale = currprefs.input_joymouse_multiplier / 2;
             x = rEvent.motion.xrel;
     				y = rEvent.motion.yrel;
-#ifdef PANDORA
+#ifdef PANDORA || defined (ANDROIDSDL)
     				if(rEvent.motion.x == 0 && x > -4)
     					x = -4;
     				if(rEvent.motion.y == 0 && y > -4)

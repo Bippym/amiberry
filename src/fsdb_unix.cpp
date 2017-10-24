@@ -87,7 +87,6 @@ int fsdb_fill_file_attrs (a_inode *base, a_inode *aino)
 
 #if defined(WIN32) || defined(ANDROIDSDL) || defined(RASPBERRY)
     // Always give execute & read permission
-    // Temporary do this for raspberry...
     aino->amigaos_mode &= ~A_FIBF_EXECUTE;
     aino->amigaos_mode &= ~A_FIBF_READ;
 #endif

@@ -217,11 +217,17 @@ void InitPanelROM(const struct _ConfigCategory& category)
 #ifdef ACTION_REPLAY
   cartROMList = new ROMListModel(ROMTYPE_ALL_CART);
 #endif
+  int cboWidth;
+#ifdef ANDROID
+  cboWidth = 450;
+#else
+  cboWidth = 400;
+#endif
   
   lblMainROM = new gcn::Label("Main ROM File:");
   lblMainROM->setSize(200, LABEL_HEIGHT);
 	cboMainROM = new gcn::UaeDropDown(mainROMList);
-  cboMainROM->setSize(400, DROPDOWN_HEIGHT);
+  cboMainROM->setSize(cboWidth, DROPDOWN_HEIGHT);
   cboMainROM->setBaseColor(gui_baseCol);
   cboMainROM->setId("cboMainROM");
   cboMainROM->addActionListener(mainROMActionListener);
@@ -234,7 +240,7 @@ void InitPanelROM(const struct _ConfigCategory& category)
   lblExtROM = new gcn::Label("Extended ROM File:");
   lblExtROM->setSize(200, LABEL_HEIGHT);
 	cboExtROM = new gcn::UaeDropDown(extROMList);
-  cboExtROM->setSize(400, DROPDOWN_HEIGHT);
+  cboExtROM->setSize(cboWidth, DROPDOWN_HEIGHT);
   cboExtROM->setBaseColor(gui_baseCol);
   cboExtROM->setId("cboExtROM");
   cboExtROM->addActionListener(extROMActionListener);
@@ -248,7 +254,7 @@ void InitPanelROM(const struct _ConfigCategory& category)
   lblCartROM = new gcn::Label("Cardridge ROM File:");
   lblCartROM->setSize(200, LABEL_HEIGHT);
 	cboCartROM = new gcn::UaeDropDown(cartROMList);
-  cboCartROM->setSize(400, DROPDOWN_HEIGHT);
+  cboCartROM->setSize(cboWidth, DROPDOWN_HEIGHT);
   cboCartROM->setBaseColor(gui_baseCol);
   cboCartROM->setId("cboCartROM");
   cboCartROM->addActionListener(cartROMActionListener);

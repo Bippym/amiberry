@@ -38,11 +38,20 @@ static NavigationMap navMap[] =
   { "Sound",            "sndDisable",     "sndDisable",     "Display",          "Input" },
   { "Input",            "cboPort0",       "cboPort0",       "Sound",            "Miscellaneous" },
   { "Miscellaneous",    "StatusLine",     "StatusLine",     "Input",            "Savestates" },
+#ifdef ANDROIDSDL
+  { "Savestates",       "State0",         "State0",         "Miscellaneous",    "OnScreen" },
+  { "OnScreen",         "OnScrButton3",   "OnScrCtrl",      "Savestates",     "Reset" },
+  { "Reset",            "Start",          "Quit",           "OnScreen",       "Paths" },
+  { "Quit",             "Reset",          "Help",           "OnScreen",       "Paths" },
+  { "Help",             "Quit",           "Start",          "OnScreen",       "Paths" },
+  { "Start",            "Help",           "Reset",          "OnScreen",       "Paths" },
+#else
   { "Savestates",       "State0",         "State0",         "Miscellaneous",    "Reset" },
   { "Reset",            "Start",          "Quit",           "Savestates",       "Paths" },
   { "Quit",             "Reset",          "Help",          "Savestates",       "Paths" },
   { "Help",             "Quit",           "Start",          "Savestates",       "Paths" },
   { "Start",            "Help",           "Reset",          "Savestates",       "Paths" },
+#endif
 
 // PanelPaths
   { "SystemROMs",     "Paths",          "Paths",          "RescanROMs",     "ConfigPath" },
@@ -243,6 +252,10 @@ static NavigationMap navMap[] =
 #ifndef RASPBERRY
   { "StatusLine",     "Miscellaneous",  "Miscellaneous",  "MasterWP",       "HideIdle" },
   { "HideIdle",       "Miscellaneous",  "Miscellaneous",  "StatusLine",     "ShowGUI" },
+#ifdef ANDROID
+  { "ShowGUI",        "Miscellaneous",  "Miscellaneous",  "HideIdle",       "BSDSocket" },
+  { "BSDSocket",      "Miscellaneous",  "Miscellaneous",  "ShowGUI",      "MasterWP" },
+#else
   { "ShowGUI",        "Miscellaneous",  "Miscellaneous",  "HideIdle",       "PandSpeed" },
   { "PandSpeed",      "",               "",               "ShowGUI",        "BSDSocket" },
   { "BSDSocket",      "Miscellaneous",  "Miscellaneous",  "PandSpeed",      "MasterWP" },
@@ -265,6 +278,21 @@ static NavigationMap navMap[] =
   { "LoadState",      "Savestates",     "SaveState",      "State3",         "State0" },
   { "SaveState",      "LoadState",      "Savestates",     "State3",         "State0" },
 
+#ifdef ANDROIDSDL
+// PanelOnScreen
+  { "OnScrCtrl",      "OnScreen",       "OnScrButton3", "DisableMenuVKeyb", "OnScrTextInput" },
+  { "OnScrButton3",   "OnScrCtrl",      "OnScreen",     "CustomPos",     "OnScrButton4" },
+  { "OnScrTextInput", "OnScreen",       "OnScrButton4", "OnScrCtrl",      "OnScrDpad" },
+  { "OnScrButton4",   "OnScrTextInput", "OnScreen",     "OnScrButton3",   "OnScrButton5" },
+  { "OnScrDpad",      "OnScreen",       "OnScrButton5", "OnScrTextInput", "OnScrButton1" },
+  { "OnScrButton5",   "OnScrDpad",      "OnScreen",     "OnScrButton4",   "OnScrButton6" },
+  { "OnScrButton1",   "OnScreen",       "OnScrButton6", "OnScrDpad",      "OnScrButton2" },
+  { "OnScrButton6",   "OnScrButton1",   "OnScreen",     "OnScrButton5",   "CustomPos" },
+  { "OnScrButton2",   "OnScreen",       "CustomPos",    "OnScrButton1",   "FloatJoy" },
+  { "CustomPos",      "OnScrButton2",   "OnScreen",     "OnScrButton6",   "Reset" },
+  { "FloatJoy",       "OnScreen",       "CustomPos",    "OnScrButton2",   "DisableMenuVKeyb" },
+  { "DisableMenuVKeyb","OnScreen",       "CustomPos",    "FloatJoy",       "Reset" },
+#endif
 
 //  active            move left         move right        move up           move down
 // EditFilesysVirtual

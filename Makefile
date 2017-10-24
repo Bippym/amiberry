@@ -24,6 +24,13 @@ else ifeq ($(PLATFORM),Pandora)
   CPU_FLAGS +=  -march=armv7-a -mfpu=neon -mfloat-abi=softfp
   MORE_CFLAGS += -DARMV6T2 -DUSE_ARMNEON -DPANDORA -msoft-float
   PROFILER_PATH = /media/MAINSD/pandora/test
+
+else ifeq ($(PLATFORM),android)
+	CPU_FLAGS += -mfpu=neon -mfloat-abi=soft
+	DEFS += -DANDROIDSDL
+	ANDROID = 1
+	HAVE_NEON = 1
+	HAVE_SDL_DISPLAY = 1
 endif
 
 NAME   = amiberry
@@ -114,7 +121,7 @@ OBJS =	\
 	src/drawing.o \
 	src/events.o \
 	src/expansion.o \
-  src/fdi2raw.o \
+	src/fdi2raw.o \
 	src/filesys.o \
 	src/flashrom.o \
 	src/fpp.o \
@@ -159,12 +166,12 @@ OBJS =	\
 	src/archivers/7z/Bra86.o \
 	src/archivers/7z/LzmaDec.o \
 	src/archivers/7z/Lzma2Dec.o \
-  src/archivers/7z/BraIA64.o \
-  src/archivers/7z/Delta.o \
-  src/archivers/7z/Sha256.o \
-  src/archivers/7z/Xz.o \
-  src/archivers/7z/XzCrc64.o \
-  src/archivers/7z/XzDec.o \
+	src/archivers/7z/BraIA64.o \
+	src/archivers/7z/Delta.o \
+	src/archivers/7z/Sha256.o \
+	src/archivers/7z/Xz.o \
+	src/archivers/7z/XzCrc64.o \
+	src/archivers/7z/XzDec.o \
 	src/archivers/dms/crc_csum.o \
 	src/archivers/dms/getbits.o \
 	src/archivers/dms/maketbl.o \
@@ -237,6 +244,12 @@ OBJS =	\
 	src/osdep/gui/main_window.o \
 	src/osdep/gui/Navigation.o \
   src/osdep/gui/sdltruetypefont.o
+
+ifeq ($(ANDROID), 1)
+OBJS += src/osdep/gui/androidsdl_event.o
+OBJS += src/osdep/gui/PanelOnScreen.o
+OBJS += src/osdep/pandora_gfx.o
+endif
 
 ifeq ($(PLATFORM),Pandora)
 OBJS += src/osdep/pandora_gfx.o
@@ -326,6 +339,7 @@ ASMS = \
 	src/machdep/support.s \
 	src/osdep/picasso96.s \
 	src/osdep/pandora.s \
+	src/osdep/pandora_gfx.s \
 	src/osdep/pandora_mem.s \
 	src/osdep/sigsegv_handler.s \
 	src/sounddep/sound.s \

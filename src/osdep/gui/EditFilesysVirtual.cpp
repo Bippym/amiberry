@@ -18,9 +18,14 @@
 #include "gui.h"
 #include "gui_handling.h"
 
+#ifdef ANDROIDSDL
+#include "androidsdl_event.h"
+#endif
 
 #define DIALOG_WIDTH 520
 #define DIALOG_HEIGHT 202
+
+extern std::string volName;
 
 static bool dialogResult = false;
 static bool dialogFinished = false;
@@ -51,8 +56,10 @@ class FilesysVirtualActionListener : public gcn::ActionListener
         char tmp[MAX_PATH];
         strncpy(tmp, txtPath->getText().c_str(), MAX_PATH);
         wndEditFilesysVirtual->releaseModalFocus();
-        if(SelectFolder("Select folder", tmp))
+        if(SelectFolder("Select folder", tmp)) {
           txtPath->setText(tmp);
+          txtVolume->setText(volName);
+	    }
         wndEditFilesysVirtual->requestModalFocus();
         cmdPath->requestFocus();
       }
@@ -243,7 +250,11 @@ static void EditFilesysVirtualLoop(void)
       //-------------------------------------------------
       // Send event to guichan-controls
       //-------------------------------------------------
-      gui_input->pushInput(event);
+#ifdef ANDROIDSDL
+        androidsdl_event(event, gui_input);
+#else
+        gui_input->pushInput(event);
+#endif
     }
 
     // Now we let the Gui object perform its logic.

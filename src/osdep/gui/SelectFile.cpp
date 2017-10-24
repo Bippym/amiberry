@@ -15,6 +15,9 @@
 #include "gui.h"
 #include "gui_handling.h"
 
+#ifdef ANDROIDSDL
+#include "androidsdl_event.h"
+#endif
 
 #define DIALOG_WIDTH 520
 #define DIALOG_HEIGHT 400
@@ -340,7 +343,11 @@ static void SelectFileLoop(void)
       //-------------------------------------------------
       // Send event to guichan-controls
       //-------------------------------------------------
-      gui_input->pushInput(event);
+#ifdef ANDROIDSDL
+        androidsdl_event(event, gui_input);
+#else
+        gui_input->pushInput(event);
+#endif
     }
 
     // Now we let the Gui object perform its logic.

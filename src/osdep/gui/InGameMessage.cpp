@@ -15,6 +15,9 @@
 #include "gui.h"
 #include "gui_handling.h"
 
+#ifdef ANDROIDSDL
+#include "androidsdl_event.h"
+#endif
 
 extern SDL_Surface *prSDLScreen;
 
@@ -120,7 +123,11 @@ void InGameMessage(const char *msg)
       //-------------------------------------------------
       // Send event to guichan-controls
       //-------------------------------------------------
-      msg_input->pushInput(event);
+#ifdef ANDROIDSDL
+        androidsdl_event(event, msg_input);
+#else
+        msg_input->pushInput(event);
+#endif
     }
 
     // Now we let the Gui object perform its logic.

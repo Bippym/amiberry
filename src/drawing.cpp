@@ -1531,7 +1531,8 @@ Don't touch this if you don't know what you are doing.  */
 
 #define DATA_POINTER(n) (line_data[lineno] + (n) * MAX_WORDS_PER_LINE * 2)
 
-#ifdef USE_ARMNEON
+#if defined(USE_ARMNEON) && !defined(ANDROID)
+// FIXME: these neon helper functions caused text rel  problem on android 
 
 #ifdef __cplusplus
   extern "C" {
@@ -1750,7 +1751,7 @@ static void pfield_doline (int lineno)
   int wordcount = dp_for_drawing->plflinelen;
   uae_u32 *data = pixdata.apixels_l + MAX_PIXELS_PER_LINE / 4;
       
-#ifdef USE_ARMNEON
+#if defined(USE_ARMNEON) && !defined(ANDROID)
   pfield_doline_n[bplplanecnt](data, wordcount, lineno);
 #else
   real_bplpt[0] = DATA_POINTER (0);

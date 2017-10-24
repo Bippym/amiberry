@@ -417,6 +417,41 @@ struct uae_prefs {
 	int input_mouse_speed;
   int input_tablet;
 	int input_keyboard_type;
+
+    /* ANDROID */
+#ifdef ANDROIDSDL
+int onScreen;
+int onScreen_textinput;
+int onScreen_dpad;
+int onScreen_button1;
+int onScreen_button2;
+int onScreen_button3;
+int onScreen_button4;
+int onScreen_button5;
+int onScreen_button6;
+int custom_position;
+int pos_x_textinput;
+int pos_y_textinput;
+int pos_x_dpad;
+int pos_y_dpad;
+int pos_x_button1;
+int pos_y_button1;
+int pos_x_button2;
+int pos_y_button2;
+int pos_x_button3;
+int pos_y_button3;
+int pos_x_button4;
+int pos_y_button4;
+int pos_x_button5;
+int pos_y_button5;
+int pos_x_button6;
+int pos_y_button6;
+int extfilter;
+int quickSwitch;
+int floatingJoystick;
+int disableMenuVKeyb;
+#endif
+
 	struct uae_input_device joystick_settings[MAX_INPUT_SETTINGS][MAX_INPUT_DEVICES];
 	struct uae_input_device mouse_settings[MAX_INPUT_SETTINGS][MAX_INPUT_DEVICES];
 	struct uae_input_device keyboard_settings[MAX_INPUT_SETTINGS][MAX_INPUT_DEVICES];

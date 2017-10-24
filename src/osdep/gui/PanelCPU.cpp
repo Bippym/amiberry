@@ -247,7 +247,11 @@ void InitPanelCPU(const struct _ConfigCategory& category)
 	grpCPU->add(chkCPUCompatible, 5, 200);
 	grpCPU->add(chkJIT, 5, 230);
 	grpCPU->setMovable(false);
+#ifdef ANDROID
+	grpCPU->setSize(165, 275);
+#else
 	grpCPU->setSize(160, 275);
+#endif
   grpCPU->setBaseColor(gui_baseCol);
   
   category.panel->add(grpCPU);
@@ -284,7 +288,11 @@ void InitPanelCPU(const struct _ConfigCategory& category)
 	grpFPU->add(chkFPUstrict, 5, 140);
 	grpFPU->add(chkSoftFloat, 5, 170);
 	grpFPU->setMovable(false);
+#ifdef ANDROID
+	grpFPU->setSize(185, 215);
+#else
 	grpFPU->setSize(180, 215);
+#endif
   grpFPU->setBaseColor(gui_baseCol);
   
   category.panel->add(grpFPU);
@@ -310,7 +318,11 @@ void InitPanelCPU(const struct _ConfigCategory& category)
 	grpCPUSpeed->add(opt28Mhz, 5, 70);
 	grpCPUSpeed->add(optFastest, 5, 100);
 	grpCPUSpeed->setMovable(false);
+#ifdef ANDROID
+	grpCPUSpeed->setSize(100, 145);
+#else
 	grpCPUSpeed->setSize(95, 145);
+#endif
   grpCPUSpeed->setBaseColor(gui_baseCol);
 
   category.panel->add(grpCPUSpeed);

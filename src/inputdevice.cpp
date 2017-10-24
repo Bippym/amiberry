@@ -4872,7 +4872,7 @@ void inputdevice_default_prefs (struct uae_prefs *p)
 	inputdevice_init ();
 
 	p->input_selected_setting = GAMEPORT_INPUT_SETTINGS;
-#ifdef PANDORA
+#ifdef PANDORA || defined(ANDROID)
   p->input_joymouse_multiplier = 20;
 #else
   p->input_joymouse_multiplier = 2;

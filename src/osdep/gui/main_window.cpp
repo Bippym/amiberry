@@ -14,6 +14,13 @@
 #include "include/memory.h"
 #include "autoconf.h"
 
+#if defined(ANDROIDSDL)
+#include "androidsdl_event.h"
+#include <SDL_screenkeyboard.h>
+#include <SDL_android.h>
+#include <android/log.h>
+#endif
+
 bool gui_running = false;
 static int last_active_panel = 2;
 
@@ -45,11 +52,18 @@ ConfigCategory categories[] = {
   { "Input",            "data/joystick.ico",  NULL, NULL, InitPanelInput,     ExitPanelInput,     RefreshPanelInput,      HelpPanelInput },
   { "Miscellaneous",    "data/misc.ico",      NULL, NULL, InitPanelMisc,      ExitPanelMisc,      RefreshPanelMisc,       HelpPanelMisc },
   { "Savestates",       "data/savestate.png", NULL, NULL, InitPanelSavestate, ExitPanelSavestate, RefreshPanelSavestate,  HelpPanelSavestate },
+#ifdef ANDROIDSDL  
+  { "OnScreen",         "data/screen.ico",    NULL, NULL, InitPanelOnScreen,  ExitPanelOnScreen, RefreshPanelOnScreen,  HelpPanelOnScreen },
+#endif
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
-enum { PANEL_PATHS, PANEL_QUICKSTART, PANEL_CONFIGURATIONS, PANEL_CPU, PANEL_CHIPSET, PANEL_ROM, PANEL_RAM,
-       PANEL_FLOPPY, PANEL_HD, PANEL_DISPLAY, PANEL_SOUND, PANEL_INPUT, PANEL_MISC, PANEL_SAVESTATES, 
+#ifdef ANDROIDSDL
+enum { PANEL_PATHS, PANEL_QUICKSTART, PANEL_CONFIGURATIONS, PANEL_CPU, PANEL_CHIPSET, PANEL_ROM, PANEL_RAM, PANEL_FLOPPY, PANEL_HD, PANEL_DISPLAY, PANEL_SOUND, PANEL_INPUT, PANEL_MISC, PANEL_SAVESTATES, 
+       PANEL_ONSCREEN, NUM_PANELS };
+#else
+enum { PANEL_PATHS, PANEL_QUICKSTART, PANEL_CONFIGURATIONS, PANEL_CPU, PANEL_CHIPSET, PANEL_ROM, PANEL_RAM, PANEL_FLOPPY, PANEL_HD, PANEL_DISPLAY, PANEL_SOUND, PANEL_INPUT, PANEL_MISC, PANEL_SAVESTATES, 
        NUM_PANELS };
+#endif
 
 
 gcn::Gui* uae_gui;
@@ -187,6 +201,11 @@ namespace sdl
 	#endif
 		SDL_EnableUNICODE(1);
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+#ifdef ANDROIDSDL
+    // Enable Android multitouch
+    SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+    SDL_JoystickOpen(0);
+#endif
 		SDL_ShowCursor(SDL_ENABLE);
 
     //-------------------------------------------------
@@ -265,6 +284,7 @@ namespace sdl
           {
             switch(event.key.keysym.sym)
             {
+#ifndef ANDROID
               case SDLK_q:
                 //-------------------------------------------------
                 // Quit entire program via Q on keyboard
@@ -286,7 +306,7 @@ namespace sdl
           			uae_reset(1, 1);
           			gui_running = false;
           			break;
-
+#endif
 						  case VK_X:
 						  case VK_A:
                 //------------------------------------------------
@@ -328,7 +348,11 @@ namespace sdl
         //-------------------------------------------------
         // Send event to guichan-controls
         //-------------------------------------------------
+#ifdef ANDROIDSDL
+        androidsdl_event(event, gui_input);
+#else
         gui_input->pushInput(event);
+#endif
       }
 
   		if(gui_rtarea_flags_onenter != gui_create_rtarea_flag(&changed_prefs))
@@ -491,7 +515,11 @@ namespace widgets
     // Initialize fonts
     //-------------------------------------------------
 	  TTF_Init();
+#ifdef ANDROID
+	  gui_font = new gcn::contrib::SDLTrueTypeFont("data/FreeSans.ttf", 16);	  
+#else
 	  gui_font = new gcn::contrib::SDLTrueTypeFont("data/FreeSans.ttf", 14);
+#endif
     gcn::Widget::setGlobalFont(gui_font);
     
   	//--------------------------------------------------
@@ -657,6 +685,10 @@ void DisableResume(void)
 
 void run_gui(void)
 {
+#ifdef ANDROIDSDL
+  SDL_ANDROID_SetScreenKeyboardShown(0);
+  SDL_ANDROID_SetSystemMousePointerVisible(1);
+#endif
   gui_running = true;
   gui_rtarea_flags_onenter = gui_create_rtarea_flag(&currprefs);
   
@@ -675,6 +707,13 @@ void run_gui(void)
     sdl::gui_run();
     widgets::gui_halt();
     sdl::gui_halt();
+#ifdef ANDROIDSDL
+    if (currprefs.onScreen!=0)
+    {
+       SDL_ANDROID_SetScreenKeyboardShown(1);
+       SDL_ANDROID_SetSystemMousePointerVisible(0);
+    }
+#endif
   }
   // Catch all Guichan exceptions.
   catch (gcn::Exception e)

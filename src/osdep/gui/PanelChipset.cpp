@@ -205,10 +205,18 @@ void InitPanelChipset(const struct _ConfigCategory& category)
   chkNTSC->addActionListener(ntscButtonActionListener);
 
   lblChipset = new gcn::Label("Extra:");
+#ifdef ANDROID
+  lblChipset->setSize(42, LABEL_HEIGHT);
+#else
   lblChipset->setSize(40, LABEL_HEIGHT);
+#endif
   lblChipset->setAlignment(gcn::Graphics::RIGHT);
 	cboChipset = new gcn::UaeDropDown(&chipsetList);
+#ifdef ANDROID
+  cboChipset->setSize(78, DROPDOWN_HEIGHT);
+#else
   cboChipset->setSize(75, DROPDOWN_HEIGHT);
+#endif
   cboChipset->setBaseColor(gui_baseCol);
   cboChipset->setId("ChipsetExtra");
   cboChipset->addActionListener(chipsetActionListener);
@@ -224,7 +232,11 @@ void InitPanelChipset(const struct _ConfigCategory& category)
 	grpChipset->add(cboChipset, 115 + lblChipset->getWidth() + 8, 10);
 
 	grpChipset->setMovable(false);
+#ifdef ANDROID
+	grpChipset->setSize(260, 185);
+#else
 	grpChipset->setSize(255, 185);
+#endif
   grpChipset->setBaseColor(gui_baseCol);
   
   category.panel->add(grpChipset);
@@ -248,7 +260,11 @@ void InitPanelChipset(const struct _ConfigCategory& category)
 	grpBlitter->add(optBlitImmed, 5, 40);
 	grpBlitter->add(optBlitWait, 5, 70);
 	grpBlitter->setMovable(false);
+#ifdef ANDROID
+	grpBlitter->setSize(125, 115);
+#else
 	grpBlitter->setSize(120, 115);
+#endif
   grpBlitter->setBaseColor(gui_baseCol);
   
   category.panel->add(grpBlitter);
@@ -262,7 +278,11 @@ void InitPanelChipset(const struct _ConfigCategory& category)
 	grpCopper->setPosition(DISTANCE_BORDER + grpChipset->getWidth() + DISTANCE_NEXT_X, grpBlitter->getY() + grpBlitter->getHeight() + DISTANCE_NEXT_Y);
 	grpCopper->add(chkFastCopper, 5, 10);
 	grpCopper->setMovable(false);
+#ifdef ANDROID
+	grpCopper->setSize(130, 55);
+#else
 	grpCopper->setSize(120, 55);
+#endif
   grpCopper->setBaseColor(gui_baseCol);
 
   category.panel->add(grpCopper);
@@ -291,7 +311,11 @@ void InitPanelChipset(const struct _ConfigCategory& category)
 	grpCollisionLevel->add(optCollPlayfield, 5, 70);
 	grpCollisionLevel->add(optCollFull, 5, 100);
 	grpCollisionLevel->setMovable(false);
+#ifdef ANDROID
+	grpCollisionLevel->setSize(270, 145);
+#else
 	grpCollisionLevel->setSize(250, 145);
+#endif
   grpCollisionLevel->setBaseColor(gui_baseCol);
   
   category.panel->add(grpCollisionLevel);
