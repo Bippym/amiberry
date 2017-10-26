@@ -326,11 +326,7 @@ void target_save_options (struct zfile *f, struct uae_prefs *p)
   cfgfile_write (f, "pandora.custom_b", "%d", customControlMap[VK_B]);
   cfgfile_write (f, "pandora.custom_x", "%d", customControlMap[VK_X]);
   cfgfile_write (f, "pandora.custom_y", "%d", customControlMap[VK_Y]);
-#ifdef ANDROIDSDL
-  cfgfile_write (f, "pandora.custom_l", "%d", customControlMap[SDLK_F13]);
-#else
   cfgfile_write (f, "pandora.custom_l", "%d", customControlMap[VK_L]);
-#endif
   cfgfile_write (f, "pandora.custom_r", "%d", customControlMap[VK_R]);
   cfgfile_write (f, "pandora.move_y", "%d", p->pandora_vertical_offset - OFFSET_Y_ADJUST);
 
@@ -410,11 +406,7 @@ int target_parse_option (struct uae_prefs *p, const char *option, const char *va
     || cfgfile_intval (option, value, "custom_b", &customControlMap[VK_B], 1)
     || cfgfile_intval (option, value, "custom_x", &customControlMap[VK_X], 1)
     || cfgfile_intval (option, value, "custom_y", &customControlMap[VK_Y], 1)
-#ifdef ANDROIDSDL
-    || cfgfile_intval (option, value, "custom_l", &customControlMap[SDLK_F13], 1)
-#else
     || cfgfile_intval (option, value, "custom_l", &customControlMap[VK_L], 1)
-#endif
     || cfgfile_intval (option, value, "custom_r", &customControlMap[VK_R], 1)
 #ifdef RASPBERRY
     || cfgfile_intval (option, value, "gfx_correct_aspect", &p->gfx_correct_aspect, 1)
@@ -1494,7 +1486,7 @@ int handle_msgpump (void)
     		    int mouseScale = currprefs.input_joymouse_multiplier / 2;
             x = rEvent.motion.xrel;
     				y = rEvent.motion.yrel;
-#ifdef PANDORA || defined (ANDROIDSDL)
+#if defined (PANDORA) || defined (ANDROIDSDL)
     				if(rEvent.motion.x == 0 && x > -4)
     					x = -4;
     				if(rEvent.motion.y == 0 && y > -4)
