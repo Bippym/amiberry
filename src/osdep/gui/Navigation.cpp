@@ -260,14 +260,21 @@ static NavigationMap navMap[] =
   { "PandSpeed",      "",               "",               "ShowGUI",        "BSDSocket" },
   { "BSDSocket",      "Miscellaneous",  "Miscellaneous",  "PandSpeed",      "MasterWP" },
   { "MasterWP",       "Miscellaneous",  "Miscellaneous",  "BSDSocket",      "StatusLine" },
+#endif
+  { "KeyForMenu",     "Miscellaneous",	"KeyForQuit",     "MasterWP",	     "StatusLine" },
+  { "KeyForQuit",     "KeyForMenu",	"Miscellaneous",  "MasterWP",	     "StatusLine" },
+
 #else
   { "StatusLine",     "Miscellaneous",  "Miscellaneous",  "scrolllock",      "HideIdle" },
   { "HideIdle",       "Miscellaneous",  "Miscellaneous",  "StatusLine",     "ShowGUI" },
   { "ShowGUI",        "Miscellaneous",  "Miscellaneous",  "HideIdle",       "BSDSocket" },
   { "BSDSocket",      "Miscellaneous",  "Miscellaneous",  "ShowGUI",        "numlock" },
   { "MasterWP",       "Miscellaneous",  "Miscellaneous",  "BSDSocket",      "numlock" },
-	{ "numlock",		    "Miscellaneous",	"scrolllock",	    "MasterWP",	      "StatusLine"},
-	{ "scrolllock",		  "numlock",			  "Miscellaneous",  "MasterWP",	      "StatusLine"},
+  { "numlock",        "Miscellaneous",	"scrolllock",	  "MasterWP",	     "KeyForMenu" },
+  { "scrolllock",     "numlock",	"Miscellaneous",  "MasterWP",	     "KeyForQuit" },
+  { "KeyForMenu",     "Miscellaneous",	"KeyForQuit",     "numlock",	     "StatusLine" },
+  { "KeyForQuit",     "KeyForMenu",	"Miscellaneous",  "scrolllock",	     "StatusLine" },
+
 #endif
   
 // PanelSavestate
