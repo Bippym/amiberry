@@ -34,3 +34,5 @@ VSLinux/obj/ARM/Debug/Amiberry.tlog/unsuccessfulbuild
 src/guisan/lib/libguisan.a
 VisualGDB/VisualGDB/Debug/Amiberry-sdl2
 VSLinux/obj/ARM/Debug/amiberry-sdl2
+VisualGDB/VisualGDB/Debug/Amiberry
+VisualGDB/Amiberry/Amiberry-Debug.vgdbsettings.midwan.user

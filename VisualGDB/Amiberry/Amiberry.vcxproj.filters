@@ -423,9 +423,6 @@
     <ClCompile Include="..\..\src\jit\compemu_fpp.cpp">
       <Filter>Source files\jit</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\jit\compemu_support.cpp">
-      <Filter>Source files\jit</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\jit\compstbl.cpp">
       <Filter>Source files\jit</Filter>
     </ClCompile>
@@ -651,11 +648,14 @@
     <ClCompile Include="..\..\src\archivers\7z\Alloc.c">
       <Filter>Source files\archivers\7z</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\jit\compemu_prefs.cpp">
-      <Filter>Source files\jit</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\archivers\7z\7zAlloc.cpp">
       <Filter>Source files\archivers\7z</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\jit\compemu_support.cpp">
+      <Filter>Source files\jit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\osdep\gui\PanelInput.cpp">
+      <Filter>Source files\osdep\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

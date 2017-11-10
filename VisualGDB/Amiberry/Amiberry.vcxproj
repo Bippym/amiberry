@@ -52,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
       <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
-      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;../../src/archivers;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;_REENTRANT;RASPBERRY;CAPSLOCK_DEBIAN_WORKAROUND;ARMV6T2;USE_ARMNEON;CPU_arm;ARMV6_ASSEMBLY;WITH_INGAME_WARNING;USE_SDL;GCCCONSTFUNC="__attribute__((const))";%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>-march=armv8-a -mfpu=neon-fp-armv8 -mfloat-abi=hard %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -66,7 +66,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <ClCompile>
       <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
-      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;../../src/archivers;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG=1;RELEASE=1;_REENTRANT;RASPBERRY;CAPSLOCK_DEBIAN_WORKAROUND;ARMV6T2;USE_ARMNEON;CPU_arm;ARMV6_ASSEMBLY;WITH_INGAME_WARNING;USE_SDL;GCCCONSTFUNC="__attribute__((const))";%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>-march=armv8-a -mfpu=neon-fp-armv8 -mfloat-abi=hard %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointer>true</OmitFramePointer>
@@ -82,7 +82,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-rpi2|VisualGDB'">
     <ClCompile>
       <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
-      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;../../src/archivers;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG=1;RELEASE=1;_REENTRANT;RASPBERRY;CAPSLOCK_DEBIAN_WORKAROUND;ARMV6T2;USE_ARMNEON;CPU_arm;ARMV6_ASSEMBLY;WITH_INGAME_WARNING;USE_SDL;GCCCONSTFUNC="__attribute__((const))";%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointer>true</OmitFramePointer>
@@ -99,7 +99,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-rpi1|VisualGDB'">
     <ClCompile>
       <CPPLanguageStandard>GNUPP14</CPPLanguageStandard>
-      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../src;../../src/include;../../src/osdep;../../src/threaddep;../../src/archivers;=/opt/vc/include;=/opt/vc/include/interface/vmcs_host/linux;=/opt/vc/include/interface/vcos/pthreads;=/usr/include/SDL;=/usr/include/libxml2;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG=1;RELEASE=1;_REENTRANT;RASPBERRY;CAPSLOCK_DEBIAN_WORKAROUND;CPU_arm;ARMV6_ASSEMBLY;WITH_INGAME_WARNING;USE_SDL;GCCCONSTFUNC="__attribute__((const))";%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>-march=armv6zk -mfpu=vfp -mfloat-abi=hard %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointer>true</OmitFramePointer>
@@ -224,7 +224,6 @@
     <ClCompile Include="..\..\src\inputdevice.cpp" />
     <ClCompile Include="..\..\src\jit\compemu.cpp" />
     <ClCompile Include="..\..\src\jit\compemu_fpp.cpp" />
-    <ClCompile Include="..\..\src\jit\compemu_prefs.cpp" />
     <ClCompile Include="..\..\src\jit\compemu_support.cpp" />
     <ClCompile Include="..\..\src\jit\compstbl.cpp" />
     <ClCompile Include="..\..\src\keybuf.cpp" />
@@ -250,6 +249,7 @@
     <ClCompile Include="..\..\src\osdep\gui\PanelDisplay.cpp" />
     <ClCompile Include="..\..\src\osdep\gui\PanelFloppy.cpp" />
     <ClCompile Include="..\..\src\osdep\gui\PanelHD.cpp" />
+    <ClCompile Include="..\..\src\osdep\gui\PanelInput.cpp" />
     <ClCompile Include="..\..\src\osdep\gui\PanelMisc.cpp" />
     <ClCompile Include="..\..\src\osdep\gui\PanelPaths.cpp" />
     <ClCompile Include="..\..\src\osdep\gui\PanelQuickstart.cpp" />

@@ -125,7 +125,7 @@
     <DeploymentTargetPath>/home/pi/projects/amiberry/$(TargetFileName)</DeploymentTargetPath>
     <X11WindowMode>Remote</X11WindowMode>
     <KeepConsoleAfterExit>false</KeepConsoleAfterExit>
-    <RunGDBUnderSudo>true</RunGDBUnderSudo>
+    <RunGDBUnderSudo>false</RunGDBUnderSudo>
     <DeploymentMode>Auto</DeploymentMode>
     <LdLibraryPath />
     <DeployWhenLaunchedWithoutDebugging>true</DeployWhenLaunchedWithoutDebugging>
